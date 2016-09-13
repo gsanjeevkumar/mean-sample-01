@@ -14,8 +14,8 @@ module.exports = function(grunt) {
     },
     growl : {
     	myMessage : {
-    		message : "Some message",
-    		title : "Notification Title"
+    		message : "New Data Point Fetched",
+    		title : "BlueMon Working"
     	}
     }
   });
