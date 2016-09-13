@@ -1,38 +1,97 @@
 #!/bin/env node
 var express = require('express');
+var http = require('http');
 var app = express();
 var path = require('path');
+var reload = require('reload');
+var timer = require('timers');
+var grunt = require('grunt');
+var util = require('util')
+var exec = require('child_process').exec;
 
-var port = 3000;
+const port = 3000;
+const DELAY = 5000;
+
 const psi = require('psi');
+
+// Start grunt
+grunt.initConfig({
+    growl : {
+    	myMessage : {
+    		message : "NodeMon - Custom just started",
+    		title : "Local Notification"
+    	}
+    }	
+});
+grunt.loadNpmTasks('grunt-growl');
+grunt.registerTask('default', 'growl:myMessage');
+
+// get the PageSpeed Insights report 
+
+const API_KEY = 'AIzaSyDZRuVba6U65IT_8o-2_8Ochjm2wUjLRog';
 
 app.use(express.static(__dirname + '/public'));
 
-
-app.listen(port);
-
 console.log('Server started at localhost:3000');
+
+var https = require('https');
+
+function saveDataPoint(d){
+  console.log(d);
+}
+
+
+
+function getDataPoint(){
+
+  // call grung
+  function puts(error, stdout, stderr) { util.puts(stdout) }
+  exec("grunt", puts);
+
+  // get the PageSpeed Insights report
+  psi('https://www.bluegreenvacations.com', {key: API_KEY, strategy: 'mobile'}).then(data => {
+    console.log('Speed score: ' + data);
+    // console.log('Usability score: ' + data.ruleGroups.USABILITY.score);
+  });
+
+  var url = 'https://www.bluegreenvacations.com';
+  var strategy = 'desktop';
+
+  console.log('calling');
+
+  https.get({
+    host: 'www.googleapis.com', 
+    path: '/pagespeedonline/v1/runPagespeed?url='+encodeURIComponent(url)+'&key='+API_KEY+'&strategy='+strategy}, function(res) {
+      if(res.statusCode==200){
+        console.log("res:");
+        
+        
+
+        res.on('data', function(d) {
+          
+          //process.stdout.write(d);
+          //saveDataPoint(JSON.stringify(d));
+        });
+      }
+
+    }).on('error', function(e) {
+    
+    console.error(e);
+
+  });
+
+  timer.setTimeout(getDataPoint, DELAY);
+}
 
 app.get('/', function(req, res){
 
 	res.sendFile(path.join(__dirname, '/index.html'));
 
+  timer.setTimeout(getDataPoint, DELAY);
+
 });
 
-
-// get the PageSpeed Insights report 
-psi('theverge.com').then(data => {
-  console.log(data.ruleGroups.SPEED.score);
-  console.log(data.pageStats);
-});
- 
-// output a formatted report to the terminal 
-psi.output('theverge.com').then(() => {
-  console.log('done');
-});
- 
-// Supply options to PSI and get back speed and usability scores 
-psi('theverge.com', {nokey: 'true', strategy: 'mobile'}).then(data => {
-  console.log('Speed score: ' + data.ruleGroups.SPEED.score);
-  console.log('Usability score: ' + data.ruleGroups.USABILITY.score);
-});
+// to reload
+var server = http.createServer(app);
+reload(server, app);
+server.listen(port);
