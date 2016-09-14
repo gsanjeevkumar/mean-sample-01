@@ -8,6 +8,23 @@ var timer = require('timers');
 var grunt = require('grunt');
 var util = require('util')
 var exec = require('child_process').exec;
+var mongodb = require('mongodb')
+var mongoose = require('mongoose');
+
+
+var database = require('./config/database');
+mongoose.connect(database.url);
+// db.on('error', console.error.bind(console, 'connect.db'));
+var leadsSchema = mongoose.Schema({
+  firstName: String,
+  lastName: String,
+  email: String,
+  phone: String
+});
+var db = mongoose.connection;
+db.once('open', function(){
+  console.log('connected');
+});
 
 const port = 3000;
 const DELAY = 5000;
