@@ -78,9 +78,6 @@ function getDataPoint(){
     path: '/pagespeedonline/v1/runPagespeed?url='+encodeURIComponent(url)+'&key='+API_KEY+'&strategy='+strategy}, function(res) {
       if(res.statusCode==200){
         console.log("res:");
-        
-        
-
         res.on('data', function(d) {
           
           //process.stdout.write(d);
