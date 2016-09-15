@@ -15,12 +15,9 @@ var mongoose = require('mongoose');
 var database = require('./config/database');
 mongoose.connect(database.url);
 // db.on('error', console.error.bind(console, 'connect.db'));
-var leadsSchema = mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  email: String,
-  phone: String
-});
+
+var leads = require('./models/leads');
+
 var db = mongoose.connection;
 db.once('open', function(){
   console.log('connected');
@@ -62,7 +59,7 @@ function saveDataPoint(d){
 function getDataPoint(){
 
   // call grung
-  function puts(error, stdout, stderr) { util.puts(stdout) }
+  function puts(error, stdout, stderr) { console.log(stdout); }
   exec("grunt", puts);
 
   // get the PageSpeed Insights report
@@ -100,13 +97,7 @@ function getDataPoint(){
   timer.setTimeout(getDataPoint, DELAY);
 }
 
-app.get('/', function(req, res){
-
-	res.sendFile(path.join(__dirname, '/index.html'));
-
-  timer.setTimeout(getDataPoint, DELAY);
-
-});
+require('./app/routes')(app);
 
 // to reload
 var server = http.createServer(app);
