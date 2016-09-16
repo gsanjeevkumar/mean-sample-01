@@ -16,8 +16,6 @@ var database = require('./config/database');
 mongoose.connect(database.url);
 // db.on('error', console.error.bind(console, 'connect.db'));
 
-var leads = require('./models/leads');
-
 var db = mongoose.connection;
 db.once('open', function(){
   console.log('connected');

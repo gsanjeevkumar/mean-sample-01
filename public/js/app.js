@@ -1,1 +1,1 @@
-var app = angular.module('ViewDataApp', ['controllers', 'services']);
+var app = angular.module('ViewDataApp', ['ngRoute', 'appRoutes', 'MainCtrl', 'LeadsCtrl', 'LeadsService']);
