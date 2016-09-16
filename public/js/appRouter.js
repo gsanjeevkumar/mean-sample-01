@@ -1,6 +1,6 @@
-angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routerProvider, $locationProvider){
+angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
 
-    $routerProvider
+    $routeProvider
 
         .when('/', {
             templateUrl: 'views/home.html',

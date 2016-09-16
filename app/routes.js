@@ -2,6 +2,7 @@ module.exports = function(app) {
 
 	app.get('/api/leads', function(req, res){
 		console.log('called get leads');
+		res.json({ message: 'Welcome to our api!' }); 
 	});
 	app.post('/api/leads', function(req, res){
 		console.log('called post leads');
